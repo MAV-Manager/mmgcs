@@ -1,33 +1,3 @@
-<div align="center">
-
-# 🚁 MAV Manager GCS 📡
-
-![Raspberry Pi Version](https://img.shields.io/badge/Raspberry_Pi-Zero%20%2F%204B-red?style=flat-square&logo=raspberry-pi)
-![Docker Compose Version](https://img.shields.io/badge/Docker%20Compose-v2.27.1-blue?style=flat-square&logo=docker)
-![PocketBase Version](https://img.shields.io/badge/PocketBase-v0.22.14-green?style=flat-square&logo=pocketbase)
-
-A web-based ground control station (GCS) for remote autopilot management via the [MAVLink protocol](https://en.wikipedia.org/wiki/MAVLink).
-
-<img src="screenshots/dashboard.png" alt="Illustration" width="auto"/>
-
-</div>
-
----
-
-## 🐚 Setup Script
-
-Be sure to install all the system dependencies before trying to run the docker container. This command will run the setup script located in the contrib folder.
-
-```bash
-curl -s https://raw.githubusercontent.com/MAV-Manager/mmgcs_public/main/contrib/setup.sh | \
-    bash -s --
-```
-
-<details>
-<summary>👈 View Setup Script</summary>
-<p>
-
-```bash
 #!/bin/bash
 
 # Update system and install necessary packages
@@ -132,26 +102,3 @@ for uart in 0 1 2 3; do
         echo "dtoverlay=uart${uart}" | sudo tee -a /boot/firmware/config.txt
     fi
 done
-```
-
-</p>
-</details>
-
----
-
-## 🐳 Installation
-```bash
-cd ~
-rm -rf mmgcs
-git clone https://github.com/MAV-Manager/mmgcs_public.git mmgcs
-cd mmgcs
-docker stop mmgcs
-docker rm mmgcs
-docker rmi mmgcs
-docker compose -f docker-compose.prod.yml up -d
-```
-
----
-
-## 📜 License
-This software is made available under a propietary End Use License Agreement. See the [`LICENSE`](LICENSE.md) file for more information.

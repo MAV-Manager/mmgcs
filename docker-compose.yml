@@ -1,6 +1,9 @@
 services:
   backend:
-    image: judahpaul16/mmgcs_backend:latest
+    build:
+      context: ./src/backend
+    volumes:
+      - ./src/backend/pb_data:/pb_data
     ports:
       - "8090:8090"
     container_name: mmgcs_backend
@@ -8,11 +11,36 @@ services:
       resources:
         limits:
           memory: 700m
+    restart: always
 
   frontend:
-    image: judahpaul16/mmgcs_frontend:latest
+    image: judahpaul/mmgcs
     ports:
-      - "5173:5173"
+      - "3000:3000"
     container_name: mmgcs_frontend
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=development
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    depends_on:
+      - sitl
+    restart: always
+
+  sitl:
+    image: radarku/ardupilot-sitl:latest
+    environment:
+      - INSTANCE=0
+      - LAT=33.7909
+      - LON=-84.3722
+      - ALT=0
+      - DIR=0
+      - MODEL=quad
+      - SPEEDUP=1
+      - VEHICLE=ArduCopter
+    tty: true
+    container_name: mmgcs_sitl
+    ports:
+      - "5760:5760"

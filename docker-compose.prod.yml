@@ -1,0 +1,58 @@
+services:
+  backend:
+    build:
+      context: ./src/backend
+    volumes:
+      - ./src/backend/pb_data:/pb_data
+    ports:
+      - "8090:8090"
+    container_name: mmgcs_backend
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    restart: always
+
+  frontend:
+    image: judahpaul/mmgcs
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    ports:
+      - "3000:3000"
+    container_name: mmgcs_frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=production
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    restart: always
+
+  webrtc:
+    image: bluenviron/mediamtx:latest-rpi
+    container_name: mmgcs_webrtc
+    environment:
+      - MTX_PATHS_CAM_SOURCE=rpiCamera
+      - MTX_WEBRTCADDITIONALHOSTS=${PUBLIC_IP}
+      - MTX_READTIMEOUT=10s
+      - MTX_WRITETIMEOUT=10s
+      - MTX_API=yes
+      - MTX_METRICS=yes
+      - MTX_PPROF=yes
+      - MTX_PROTOCOLS=tcp
+      - MTX_RTSPADDRESS=:8554
+      - MTX_RTMPADDRESS=:1935
+      - MTX_HLSADDRESS=:8888
+      - MTX_WEBRTCADDRESS=:8889
+      - MTX_APIADDRESS=:9997
+      - MTX_METRICSADDRESS=:9998
+      - MTX_PPROFFADDRESS=:9999
+      - MTX_READBUFFERCOUNT=512
+    volumes:
+      - /run/udev:/run/udev:ro
+    tmpfs:
+      - /dev/shm:exec
+    network_mode: host
+    privileged: true
+    restart: always
